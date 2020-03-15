@@ -10,7 +10,7 @@ export default function App() {
       <Router>
         <div>
           <ul className="navbar">
-            <div className="title">Fruit Store</div>
+            <div className="title"><Link to="/">Fruit Store</Link></div>
             <li>
               <Link to="/viewFruitPrices">View Fruit Report</Link>
             </li>
@@ -21,8 +21,9 @@ export default function App() {
 
           <Switch>
             <Route exact path="/" component={FruitContainer} />
-            <Route exact path="/viewFruitPrices" component={FruitContainer} />
-            <Route exact path="/addFruitSales" component={FruitSalesForm} />
+            <Route path="/viewFruitPrices" component={FruitContainer} />
+            <Route path="/addFruitSales" component={FruitSalesForm} />
+            <Route path="" component={FruitContainer} />
           </Switch>
         </div>
       </Router>

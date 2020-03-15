@@ -3,25 +3,21 @@ import FruitForm from "./FruitForm";
 import "./fruit-report.css";
 import FruitTable from './FruitTable';
 import FruitChart from './FruitChart';
-
-// NOTE: Only use mock data if the Back_End is not running or not returning data
-const mock =
-    [
-        { date: "2019-01-07 00:00:00", bananas: 401, strawberries: 58, apples: 290, oranges: 191 },
-        { date: "2019-02-07 00:00:00", bananas: 354, strawberries: 98, apples: 132, oranges: 123 },
-        { date: "2019-03-07 00:00:00", bananas: 512, strawberries: 120, apples: 321, oranges: 159 },
-        { date: "2019-04-07 00:00:00", bananas: 287, strawberries: 75, apples: 214, oranges: 187 }
-    ];
+import moment from 'moment';
+import { config } from "../../config";
 
 export default class FruitContainer extends Component {
     constructor(props) {
         super(props);
 
         // initialize startDate and endDate with today's date
-        const today = new Date();
+        //const today = new Date();
+        const dateStr = moment().format('YYYY-MM-DD');
+        /*
         const m = today.getMonth() + 1; // m = month 1..12
-        const month = m < 9 ? `0${m}` : m;
+        const month = m < 10 ? `0${m}` : m;
         const dateStr = today.getFullYear() + '-' + month + '-' + today.getDate();
+        */
 
         this.state = {
             data: null,
@@ -44,7 +40,7 @@ export default class FruitContainer extends Component {
 
     componentDidMount() {
         // load fruit from API
-        fetch('http://localhost:8000/api/fruit')
+        fetch(`${config.apiUrl}/api/fruit`)
             .then(response => response.json())
             .then(data => {
                 if (data && data.data && data.data.length) {
@@ -57,6 +53,7 @@ export default class FruitContainer extends Component {
             .catch(err => {
                 console.log(err);
                 // fallback to mock data
+                const mock = getMockData();
                 this.setState({ data: mock, loadedFruitData: true });
             });
     }
@@ -96,8 +93,7 @@ export default class FruitContainer extends Component {
                 return true
             }
 
-            let dateStr = row.date.slice(0, 10);
-            let d = new Date(dateStr);
+            let d = new Date(row.date);
             let sd = new Date(startDate);
             let ed = new Date(endDate);
             return this.verifyDateRange(d, sd, ed);
@@ -116,5 +112,22 @@ export default class FruitContainer extends Component {
     verifyDateRange = (d, sd, ed) => {
         return (d >= sd && d <= ed)
     }
+}
 
+const getMockData = () => {
+
+    const dateStr = moment().format('YYYY-MM-DD');
+
+    // NOTE: Only use mock data if the Back_End is not running or not returning data
+    const mock =
+        [
+            { date: "2019-01-07", bananas: 401, strawberries: 58, apples: 290, oranges: 191 },
+            { date: "2019-02-07", bananas: 354, strawberries: 98, apples: 132, oranges: 123 },
+            { date: "2019-03-07", bananas: 512, strawberries: 120, apples: 321, oranges: 159 },
+            { date: "2019-04-07", bananas: 287, strawberries: 75, apples: 214, oranges: 187 },
+            { date: dateStr, bananas: 11, strawberries: 22, apples: 33, oranges: 44 }
+
+        ];
+
+    return mock;
 }

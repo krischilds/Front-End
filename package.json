@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "homepage": "https://github.com/krischilds/Front-End",
   "dependencies": {
+    "moment": "^2.24.0",
     "react": "16.12.0",
     "react-dom": "16.12.0",
     "react-google-charts": "^3.0.15",

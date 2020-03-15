@@ -24,32 +24,26 @@ input:valid + span::after {
 }
 
 /* table styles */
-table.greyGridTable {
-  border: 2px solid rgba(0, 0, 0, 0.5);
-  width: 100%;
+table.grid-table {
+  border: 2px solid rgba(150, 150, 150, 1);
+  width: auto;
   text-align: center;
   border-collapse: collapse;
 }
-table.greyGridTable td,
-table.greyGridTable th {
-  border: 1px solid #ffffff;
-  padding: 3px 4px;
+table.grid-table td,
+table.grid-table th {
+  padding: 8px;
 }
 
-table.greyGridTable td:nth-child(even) {
+table.grid-table td:nth-child(even) {
   background: #ebebeb;
 }
-table.greyGridTable thead {
+table.grid-table thead {
   background: #ffffff;
-  border-bottom: 2px solid #333333;
+  border-bottom: 2px solid rgba(150, 150, 150, 1);
 }
-table.greyGridTable thead th {
-  font-weight: bold;
-  color: #333333;
+table.grid-table thead th {
+  color: #888888;
   text-align: center;
-  border-left: 1px solid #333333;
   text-transform: capitalize;
-}
-table.greyGridTable thead th:first-child {
-  border-left: none;
 }

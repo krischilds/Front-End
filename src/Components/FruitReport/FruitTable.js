@@ -16,7 +16,7 @@ export default function FruitTable(props) {
         const table = buildTableRows(props.fruitData);
         tableSection = (<section className="indent-left">
             <div style={{ padding: "4px" }}>Sales data from {props.startDate} to {props.endDate}</div>
-            <table className='greyGridTable'>{header}{table}</table></section>);
+            <table className='grid-table'>{header}{table}</table></section>);
     }
 
     return (
@@ -26,10 +26,9 @@ export default function FruitTable(props) {
 
 const buildTableRows = (rows) => {
     const tableRows = rows.map((row) => {
-        const d = row.date.slice(0, 10);
         return (
-            <tr key={d}>
-                <td>{row.date.slice(0, 10)}</td>
+            <tr key={row.date}>
+                <td>{row.date}</td>
                 <td>{row.bananas}</td>
                 <td>{row.strawberries}</td>
                 <td>{row.apples}</td>
