@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import FruitForm from "./FruitForm";
-import "./fruit-report.css";
 import FruitTable from './FruitTable';
 import FruitChart from './FruitChart';
 import moment from 'moment';
 import { config } from "../../config";
+import "./fruit-report.css";
 
 export default class FruitContainer extends Component {
     constructor(props) {

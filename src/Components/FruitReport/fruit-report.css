@@ -25,25 +25,30 @@ input:valid + span::after {
 
 /* table styles */
 table.grid-table {
-  border: 2px solid rgba(150, 150, 150, 1);
+  border: 1px solid gray;
   width: auto;
   text-align: center;
   border-collapse: collapse;
 }
-table.grid-table td,
+table.grid-table td {
+  padding: 4px;
+  border-bottom: 1px solid gray;
+}
+
 table.grid-table th {
   padding: 8px;
 }
 
 table.grid-table td:nth-child(even) {
-  background: #ebebeb;
+  background: #f4f4f4;
 }
 table.grid-table thead {
   background: #ffffff;
-  border-bottom: 2px solid rgba(150, 150, 150, 1);
+  border-bottom: 1px solid gray;
 }
 table.grid-table thead th {
   color: #888888;
   text-align: center;
   text-transform: capitalize;
+  font-weight: 400;
 }

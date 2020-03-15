@@ -4,7 +4,7 @@
   "description": "",
   "keywords": [],
   "main": "src/index.js",
-  "homepage": "https://github.com/krischilds/Front-End",
+  "homepage": "",
   "dependencies": {
     "moment": "^2.24.0",
     "react": "16.12.0",
