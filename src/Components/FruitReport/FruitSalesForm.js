@@ -19,7 +19,7 @@ export default class FruitSalesForm extends Component {
             strawberrySales: 0,
             orangeSales: 0,
             appleSales: 0,
-            loadedFruitData: false
+            message: ""
         };
 
         this.handleChangeSalesDate.bind(this);
@@ -27,27 +27,7 @@ export default class FruitSalesForm extends Component {
         this.handleChangeAppleSales.bind(this);
         this.handleChangeOrangeSales.bind(this);
         this.handleChangeStrawberrySales.bind(this);
-        this.postSalesData.bind(this);
-    }
-
-    loadSalesData = () => {
-
-        fetch(`${config.apiUrl}/api/fruit`)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.data && data.data.length) {
-                    this.setState({
-                        fruitData: data.data
-                    });
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                // fallback to mock data
-                const mock = getMockData();
-                this.setState({ data: mock, loadedFruitData: true });
-            });
-
+        this.postFruitData.bind(this);
     }
 
     componentDidMount() {
@@ -61,8 +41,7 @@ export default class FruitSalesForm extends Component {
             .then(data => {
                 if (data && data.data && data.data.length) {
                     this.setState({
-                        fruitData: data.data,
-                        loadedFruitData: true
+                        fruitData: data.data
                     });
                 }
             })
@@ -70,11 +49,11 @@ export default class FruitSalesForm extends Component {
                 console.log(err);
                 // fallback to mock data if API fails
                 const mock = getMockData();
-                this.setState({ fruitData: mock, loadedFruitData: true });
+                this.setState({ fruitData: mock });
             });
     }
 
-    postSalesData = () => {
+    postFruitData = () => {
 
         const opts = {
             date: this.state.salesDate || '2020-03-15',
@@ -95,6 +74,14 @@ export default class FruitSalesForm extends Component {
         })
             .then((response) => response.json())
             .then((data) => {
+                let m = '';
+                try {
+                    m = JSON.stringify(data);
+                } catch (err) {
+                    m = "New fruit added."
+                }
+
+                this.setState({ message: m });
                 this.loadFruitData();
                 console.log('Success:', data);
             })
@@ -105,23 +92,23 @@ export default class FruitSalesForm extends Component {
 
 
     handleChangeSalesDate = (event) => {
-        this.setState({ salesDate: event.target.value });
+        this.setState({ salesDate: event.target.value, message: '' });
     }
 
     handleChangeBananaSales = (event) => {
-        this.setState({ bananaSales: event.target.value });
+        this.setState({ bananaSales: event.target.value, message: '' });
     }
 
     handleChangeAppleSales = (event) => {
-        this.setState({ appleSales: event.target.value });
+        this.setState({ appleSales: event.target.value, message: '' });
     }
 
     handleChangeOrangeSales = (event) => {
-        this.setState({ orangeSales: event.target.value });
+        this.setState({ orangeSales: event.target.value, message: '' });
     }
 
     handleChangeStrawberrySales = (event) => {
-        this.setState({ strawberrySales: event.target.value });
+        this.setState({ strawberrySales: event.target.value, message: '' });
     }
 
     render() {
@@ -181,11 +168,12 @@ export default class FruitSalesForm extends Component {
 
                     <div className="sales-grid">
                         <div style={{ marginTop: "4px" }}>
-                            <button onClick={this.postSalesData} className="report-form-button" type="button">Add Sales</button>
+                            <button onClick={this.postFruitData} className="report-form-button" type="button">Add Sales</button>
                         </div>
 
                     </div>
 
+                    <div style={{ fontWeight: "bold", padding: "10px" }}>{this.state.message}</div>
                     <hr />
 
                     <FruitTable fruitData={this.state.fruitData} />
