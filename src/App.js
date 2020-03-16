@@ -10,20 +10,21 @@ export default function App() {
       <Router>
         <div>
           <ul className="navbar">
-            <div className="title"><Link to="/">Fruit Store</Link></div>
-            <li>
-              <Link to="/viewFruitPrices">View Fruit Report</Link>
+            <li className="title">
+              <Link to={{ pathname: '/' }}>Fruit Store</Link>
             </li>
             <li>
-              <Link to="/addFruitSales">Add Fruit Sales</Link>
+              <Link to={{ pathname: '/viewFruitSales' }}>View Fruit Report</Link>
+            </li>
+            <li>
+              <Link to={{ pathname: '/addFruitSales' }}>Add Fruit Sales</Link>
             </li>
           </ul>
 
           <Switch>
-            <Route exact path="/" component={FruitContainer} />
-            <Route path="/viewFruitPrices" component={FruitContainer} />
+            <Route exact={true} path="/" component={FruitContainer} />
+            <Route path="/viewFruitSales" component={FruitContainer} />
             <Route path="/addFruitSales" component={FruitSalesForm} />
-            <Route path="" component={FruitContainer} />
           </Switch>
         </div>
       </Router>

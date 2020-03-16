@@ -5,7 +5,8 @@
   align-items: flex-end;
 }
 
-.sales-item {
+.sales-item,
+.sales-date {
   padding: 8px;
 }
 

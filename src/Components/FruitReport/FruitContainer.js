@@ -1,35 +1,38 @@
 import React, { Component } from 'react'
-import FruitForm from "./FruitForm";
-import FruitTable from './FruitTable';
-import FruitChart from './FruitChart';
+import FruitReport from "./FruitReport";
 import moment from 'moment';
 import { config } from "../../config";
 import "./fruit-report.css";
+import getMockData from "./Mock";
 
 export default class FruitContainer extends Component {
     constructor(props) {
         super(props);
 
+        console.log(props);
+        console.log(props.match.params);
+
         // initialize startDate and endDate with today's date
-        //const today = new Date();
         const dateStr = moment().format('YYYY-MM-DD');
-        /*
-        const m = today.getMonth() + 1; // m = month 1..12
-        const month = m < 10 ? `0${m}` : m;
-        const dateStr = today.getFullYear() + '-' + month + '-' + today.getDate();
-        */
 
         this.state = {
-            data: null,
+            fruitData: null,
             startDate: dateStr,
             endDate: dateStr,
             loadedFruitData: false
         };
 
-        this.handleChangeStartDate.bind(this);
-        this.handleChangeEndDate.bind(this);
+
+        // this.handleChangeStartDate.bind(this);
+        // this.handleChangeEndDate.bind(this);
+        this.updateDateFilter.bind(this);
     }
 
+    updateDateFilter = (startDate, endDate) => {
+        this.setState({ startDate, endDate });
+    }
+
+    /*
     handleChangeStartDate = event => {
         this.setState({ startDate: event.target.value });
     };
@@ -37,49 +40,40 @@ export default class FruitContainer extends Component {
     handleChangeEndDate = event => {
         this.setState({ endDate: event.target.value });
     };
+*/
 
-    componentDidMount() {
-        // load fruit from API
+    loadFruitData = () => {
         fetch(`${config.apiUrl}/api/fruit`)
             .then(response => response.json())
             .then(data => {
                 if (data && data.data && data.data.length) {
                     this.setState({
-                        data: data.data,
+                        fruitData: data.data,
                         loadedFruitData: true
                     });
                 }
             })
             .catch(err => {
                 console.log(err);
-                // fallback to mock data
+                // fallback to mock data if API fails
                 const mock = getMockData();
-                this.setState({ data: mock, loadedFruitData: true });
+                this.setState({ fruitData: mock, loadedFruitData: true });
             });
     }
 
+    componentDidMount() {
+        // load fruit from API
+        this.loadFruitData();
+    }
+
     render() {
-        const filteredData = this.filterDataByDateRange(this.state.startDate, this.state.endDate, this.state.data);
+        const filteredData = this.filterDataByDateRange(this.state.startDate, this.state.endDate, this.state.fruitData);
         return (
-            <div style={{ margin: "20px" }}>
-                <h4 className="page-title">Fruit Report</h4>
-                <FruitForm
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    handleChangeStartDate={this.handleChangeStartDate}
-                    handleChangeEndDate={this.handleChangeEndDate}
-                />
-                <hr />
-                <FruitTable
-                    fruitData={filteredData}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate} />
-                <hr />
-                <FruitChart
-                    fruitData={filteredData}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate} />
-            </div>
+            <FruitReport
+                fruitData={filteredData}
+                startDate={this.state.startDate}
+                endDate={this.state.endDate}
+                updateDateFilter={this.updateDateFilter} />
         )
     }
 
@@ -112,22 +106,4 @@ export default class FruitContainer extends Component {
     verifyDateRange = (d, sd, ed) => {
         return (d >= sd && d <= ed)
     }
-}
-
-const getMockData = () => {
-
-    const dateStr = moment().format('YYYY-MM-DD');
-
-    // NOTE: Only use mock data if the Back_End is not running or not returning data
-    const mock =
-        [
-            { date: "2019-01-07", bananas: 401, strawberries: 58, apples: 290, oranges: 191 },
-            { date: "2019-02-07", bananas: 354, strawberries: 98, apples: 132, oranges: 123 },
-            { date: "2019-03-07", bananas: 512, strawberries: 120, apples: 321, oranges: 159 },
-            { date: "2019-04-07", bananas: 287, strawberries: 75, apples: 214, oranges: 187 },
-            { date: dateStr, bananas: 11, strawberries: 22, apples: 33, oranges: 44 }
-
-        ];
-
-    return mock;
 }

@@ -1,29 +1,135 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { min } from 'moment';
+import FruitTable from './FruitTable';
+import moment from 'moment';
+import { config } from "../../config";
 import "./fruit-sales.css";
+import getMockData from "./Mock";
 
 export default class FruitSalesForm extends Component {
 
     constructor(props) {
         super(props);
 
+        const dateStr = moment().format('YYYY-MM-DD');
+
         this.state = {
-            fruit: null,
-            salesDate: null
+            fruitData: null,
+            salesDate: dateStr,
+            bananaSales: 0,
+            strawberrySales: 0,
+            orangeSales: 0,
+            appleSales: 0,
+            loadedFruitData: false
         };
 
         this.handleChangeSalesDate.bind(this);
+        this.handleChangeBananaSales.bind(this);
+        this.handleChangeAppleSales.bind(this);
+        this.handleChangeOrangeSales.bind(this);
+        this.handleChangeStrawberrySales.bind(this);
+        this.postSalesData.bind(this);
     }
+
+    loadSalesData = () => {
+
+        fetch(`${config.apiUrl}/api/fruit`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data && data.data.length) {
+                    this.setState({
+                        fruitData: data.data
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                // fallback to mock data
+                const mock = getMockData();
+                this.setState({ data: mock, loadedFruitData: true });
+            });
+
+    }
+
+    componentDidMount() {
+        this.loadFruitData();
+
+    }
+
+    loadFruitData = () => {
+        fetch(`${config.apiUrl}/api/fruit`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.data && data.data.length) {
+                    this.setState({
+                        fruitData: data.data,
+                        loadedFruitData: true
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                // fallback to mock data if API fails
+                const mock = getMockData();
+                this.setState({ fruitData: mock, loadedFruitData: true });
+            });
+    }
+
+    postSalesData = () => {
+
+        const opts = {
+            date: this.state.salesDate || '2020-03-15',
+            bananas: this.state.bananaSales,
+            apples: this.state.appleSales,
+            oranges: this.state.orangeSales,
+            strawberries: this.state.strawberrySales
+        }
+
+        console.log(opts);
+
+        fetch(`${config.apiUrl}/api/fruit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(opts),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                this.loadFruitData();
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
 
     handleChangeSalesDate = (event) => {
         this.setState({ salesDate: event.target.value });
     }
 
+    handleChangeBananaSales = (event) => {
+        this.setState({ bananaSales: event.target.value });
+    }
+
+    handleChangeAppleSales = (event) => {
+        this.setState({ appleSales: event.target.value });
+    }
+
+    handleChangeOrangeSales = (event) => {
+        this.setState({ orangeSales: event.target.value });
+    }
+
+    handleChangeStrawberrySales = (event) => {
+        this.setState({ strawberrySales: event.target.value });
+    }
+
     render() {
         return (
-            <div style={{ margin: "20px" }}>
-                <h4 className="page-title">Fruit Sales</h4>
+            <div>
+                <div className="page-header">
+                    <h4 className="page-title">Fruit Sales Form</h4>
+                </div>
                 <form>
 
                     <div className="sales-grid">
@@ -35,6 +141,9 @@ export default class FruitSalesForm extends Component {
                                 required />
                             </div>
                         </div>
+
+                    </div>
+                    <div className="sales-grid">
 
                         <div className="sales-item"><label htmlFor="bananaSales">Bananas</label>
                             <div><input type="number" min="0" id="bananaSales" name="bananaSales"
@@ -60,7 +169,7 @@ export default class FruitSalesForm extends Component {
                             </div>
                         </div>
 
-                        <div className="sales-item"><label htmlFor="strawberrySales">Oranges</label>
+                        <div className="sales-item"><label htmlFor="strawberrySales">Strawberries</label>
                             <div><input type="number" min="0" id="strawberrySales" name="strawberrySales"
                                 value={this.state.strawberrySales}
                                 onChange={this.handleChangeStrawberrySales}
@@ -70,13 +179,20 @@ export default class FruitSalesForm extends Component {
 
                     </div>
 
+                    <div className="sales-grid">
+                        <div style={{ marginTop: "4px" }}>
+                            <button onClick={this.postSalesData} className="report-form-button" type="button">Add Sales</button>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <FruitTable fruitData={this.state.fruitData} />
+
                 </form>
 
             </div>
         )
     }
 }
-
-
-FruitSalesForm.propTypes = {
-};

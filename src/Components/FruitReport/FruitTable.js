@@ -2,10 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 export default function FruitTable(props) {
-    let tableSection = (<section className="indent-left">
-        <p className='warning-text'>Unable to display data table.</p>
-        <p>There is no data available between {props.startDate} and {props.endDate}</p>
-    </section>);
+    let tableSection = (<section className="indent-left"></section>);
+    const hasDates = props.startDate && props.endDate;
+    if (hasDates) {
+        tableSection = (<section className="indent-left">
+            <p className='warning-text'>Unable to display data table.</p>
+            <p>There is no data available between {props.startDate} and {props.endDate}</p>
+        </section>);
+    }
+
     if (props.fruitData && props.fruitData.length) {
 
         const headers = ["date", "bananas", "strawberries", "apples", "oranges"];
@@ -14,9 +19,15 @@ export default function FruitTable(props) {
         })
         const header = <thead><tr>{headerTags}</tr></thead>;
         const table = buildTableRows(props.fruitData);
-        tableSection = (<section className="indent-left">
-            <div style={{ padding: "4px" }}>Sales data from {props.startDate} to {props.endDate}</div>
-            <table className='grid-table'>{header}{table}</table></section>);
+
+        if (hasDates) {
+            tableSection = (<section className="indent-left">
+                <div style={{ padding: "4px" }}>Sales data from {props.startDate} to {props.endDate}</div>
+                <table className='grid-table'>{header}{table}</table></section>);
+        } else {
+            tableSection = (<section className="indent-left">
+                <table className='grid-table'>{header}{table}</table></section>);
+        }
     }
 
     return (

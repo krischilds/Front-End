@@ -57,3 +57,7 @@ ul.navbar li a {
   margin-top: 1em;
   margin-bottom: 2em;
 }
+
+.page-header {
+  margin: "20px";
+}
