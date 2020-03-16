@@ -3,23 +3,28 @@ import FruitTable from './FruitTable';
 import moment from 'moment';
 import { config } from "../../config";
 import "./fruit-sales.css";
-import getMockData from "./Mock";
+import Mock from "./Mock";
 
 export default class FruitSalesForm extends Component {
 
     constructor(props) {
         super(props);
 
+        // NOTE: only use this if there is no backend running
+        this.mock = new Mock();
+
         const dateStr = moment().format('YYYY-MM-DD');
 
         this.state = {
+            date: dateStr,
             fruitData: null,
             salesDate: dateStr,
             bananaSales: 0,
             strawberrySales: 0,
             orangeSales: 0,
             appleSales: 0,
-            message: ""
+            message: "",
+            useMock: false
         };
 
         this.handleChangeSalesDate.bind(this);
@@ -32,7 +37,6 @@ export default class FruitSalesForm extends Component {
 
     componentDidMount() {
         this.loadFruitData();
-
     }
 
     loadFruitData = () => {
@@ -48,46 +52,56 @@ export default class FruitSalesForm extends Component {
             .catch(err => {
                 console.log(err);
                 // fallback to mock data if API fails
-                const mock = getMockData();
-                this.setState({ fruitData: mock });
+                if (!this.state.fruitData) {
+                    this.setState({ fruitData: this.mock.getData(), useMock: true });
+                }
             });
     }
 
     postFruitData = () => {
 
-        const opts = {
-            date: this.state.salesDate || '2020-03-15',
+        // new salse data added in form
+        const newSalesData = {
+            date: this.state.salesDate || this.state.date,
             bananas: this.state.bananaSales,
             apples: this.state.appleSales,
             oranges: this.state.orangeSales,
             strawberries: this.state.strawberrySales
         }
 
-        console.log(opts);
+        console.log(newSalesData);
 
-        fetch(`${config.apiUrl}/api/fruit`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(opts),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                let m = '';
-                try {
-                    m = JSON.stringify(data);
-                } catch (err) {
-                    m = "New fruit added."
-                }
+        // if no backend API, add to mock data to demo this feature
+        if (this.state.useMock) {
+            this.mock.addData(newSalesData);
+            this.setState({ fruitData: this.mock.getData(), message: JSON.stringify(newSalesData) });
+        } else {
 
-                this.setState({ message: m });
-                this.loadFruitData();
-                console.log('Success:', data);
+            fetch(`${config.apiUrl}/api/fruit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newSalesData),
             })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+                .then((response) => response.json())
+                .then((data) => {
+                    let m = '';
+                    try {
+                        m = JSON.stringify(data);
+                    } catch (err) {
+                        m = "New fruit added."
+                    }
+
+                    this.setState({ message: m });
+                    this.loadFruitData();
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
     }
 
 

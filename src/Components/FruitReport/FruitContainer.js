@@ -3,7 +3,7 @@ import FruitReport from "./FruitReport";
 import moment from 'moment';
 import { config } from "../../config";
 import "./fruit-report.css";
-import getMockData from "./Mock";
+import Mock from "./Mock";
 
 export default class FruitContainer extends Component {
     constructor(props) {
@@ -15,6 +15,9 @@ export default class FruitContainer extends Component {
         // initialize startDate and endDate with today's date
         const dateStr = moment().format('YYYY-MM-DD');
 
+        // Note: only use mock when backend is not running
+        this.mock = new Mock();
+
         this.state = {
             fruitData: null,
             startDate: dateStr,
@@ -22,25 +25,12 @@ export default class FruitContainer extends Component {
             loadedFruitData: false
         };
 
-
-        // this.handleChangeStartDate.bind(this);
-        // this.handleChangeEndDate.bind(this);
         this.updateDateFilter.bind(this);
     }
 
     updateDateFilter = (startDate, endDate) => {
         this.setState({ startDate, endDate });
     }
-
-    /*
-    handleChangeStartDate = event => {
-        this.setState({ startDate: event.target.value });
-    };
-
-    handleChangeEndDate = event => {
-        this.setState({ endDate: event.target.value });
-    };
-*/
 
     loadFruitData = () => {
         fetch(`${config.apiUrl}/api/fruit`)
@@ -55,9 +45,8 @@ export default class FruitContainer extends Component {
             })
             .catch(err => {
                 console.log(err);
-                // fallback to mock data if API fails
-                const mock = getMockData();
-                this.setState({ fruitData: mock, loadedFruitData: true });
+                // fallback to mock data if API fails                
+                this.setState({ fruitData: this.mock.getData(), loadedFruitData: true });
             });
     }
 
