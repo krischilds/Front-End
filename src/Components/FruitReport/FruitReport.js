@@ -35,6 +35,7 @@ export default class FruitReport extends Component {
                 />
                 <hr />
                 <FruitTable
+                    loadedFruitData={this.props.loadedFruitData}
                     fruitData={this.props.fruitData}
                     startDate={this.props.startDate}
                     endDate={this.props.endDate} />

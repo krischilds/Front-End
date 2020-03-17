@@ -14,10 +14,10 @@ export default function App() {
               <Link to={{ pathname: '/' }}>Fruit Store</Link>
             </li>
             <li>
-              <Link to={{ pathname: '/viewFruitSales' }}>View Fruit Report</Link>
+              <Link className="navlink" to={{ pathname: '/viewFruitSales' }}>View Fruit Report</Link>
             </li>
             <li>
-              <Link to={{ pathname: '/addFruitSales' }}>Add Fruit Sales</Link>
+              <Link className="navlink" to={{ pathname: '/addFruitSales' }}>Add Fruit Sales</Link>
             </li>
           </ul>
 

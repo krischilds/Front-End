@@ -28,6 +28,14 @@ export default function FruitTable(props) {
             tableSection = (<section className="indent-left">
                 <table className='grid-table'>{header}{table}</table></section>);
         }
+    } else {
+
+        if (!props.loadedFruitData) {
+            tableSection = (<section className="indent-left">
+                <div className="loader"></div>
+            </section>);
+        }
+
     }
 
     return (
@@ -36,9 +44,10 @@ export default function FruitTable(props) {
 }
 
 const buildTableRows = (rows) => {
+    let key = 0;
     const tableRows = rows.map((row) => {
         return (
-            <tr key={row.date}>
+            <tr key={key++}>
                 <td>{row.date}</td>
                 <td>{row.bananas}</td>
                 <td>{row.strawberries}</td>

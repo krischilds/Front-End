@@ -59,6 +59,7 @@ export default class FruitContainer extends Component {
         const filteredData = this.filterDataByDateRange(this.state.startDate, this.state.endDate, this.state.fruitData);
         return (
             <FruitReport
+                loadedFruitData={this.state.loadedFruitData}
                 fruitData={filteredData}
                 startDate={this.state.startDate}
                 endDate={this.state.endDate}
